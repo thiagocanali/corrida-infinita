@@ -1,5 +1,5 @@
 <template>
-  <div class="game">
+  <div class="game" @keydown="handleKey" tabindex="0" ref="gameRef">
     <div class="score">Score: {{ score }}</div>
 
     <div
@@ -22,16 +22,15 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted } from 'vue'
 
 const WIDTH = 400
 const HEIGHT = 600
 
+const gameRef = ref(null)
 const score = ref(0)
-const speed = ref(6)
+const speed = ref(4)
 const gameOver = ref(false)
-
-const playerSpeed = 6
 
 const player = ref({
   x: WIDTH / 2 - 20,
@@ -42,38 +41,17 @@ const player = ref({
 
 const obstacles = ref([])
 
-const keys = {
-  left: false,
-  right: false,
-}
-
 let lastSpawn = 0
-let animationId = null
 
-// 🎮 INPUT CONTÍNUO
-function onKeyDown(e) {
-  if (e.key === 'ArrowLeft' || e.key === 'a') keys.left = true
-  if (e.key === 'ArrowRight' || e.key === 'd') keys.right = true
-}
+function handleKey(e) {
+  if (gameOver.value) return
 
-function onKeyUp(e) {
-  if (e.key === 'ArrowLeft' || e.key === 'a') keys.left = false
-  if (e.key === 'ArrowRight' || e.key === 'd') keys.right = false
-}
-
-// 🚗 MOVIMENTO SUAVE
-function updatePlayer() {
-  if (keys.left) {
-    player.value.x -= playerSpeed
+  if (e.key === 'ArrowLeft' || e.key === 'a') {
+    player.value.x = Math.max(0, player.value.x - 20)
   }
-  if (keys.right) {
-    player.value.x += playerSpeed
+  if (e.key === 'ArrowRight' || e.key === 'd') {
+    player.value.x = Math.min(WIDTH - player.value.width, player.value.x + 20)
   }
-
-  player.value.x = Math.max(
-    0,
-    Math.min(WIDTH - player.value.width, player.value.x)
-  )
 }
 
 function spawnObstacle() {
@@ -98,34 +76,31 @@ function checkCollision(a, b) {
 function loop() {
   if (gameOver.value) return
 
-  updatePlayer()
-
   score.value++
-  speed.value += 0.002
+  speed.value += 0.001
 
   obstacles.value.forEach(obs => {
     obs.y += speed.value
 
     if (checkCollision(player.value, obs)) {
       gameOver.value = true
-      cancelAnimationFrame(animationId)
     }
   })
 
   obstacles.value = obstacles.value.filter(o => o.y < HEIGHT)
 
-  if (Date.now() - lastSpawn > 500) {
+  if (Date.now() - lastSpawn > 700) {
     spawnObstacle()
     lastSpawn = Date.now()
   }
 
-  animationId = requestAnimationFrame(loop)
+  requestAnimationFrame(loop)
 }
 
 function restart() {
   obstacles.value = []
   score.value = 0
-  speed.value = 6
+  speed.value = 4
   gameOver.value = false
   player.value.x = WIDTH / 2 - 20
   lastSpawn = Date.now()
@@ -133,14 +108,8 @@ function restart() {
 }
 
 onMounted(() => {
-  window.addEventListener('keydown', onKeyDown)
-  window.addEventListener('keyup', onKeyUp)
+  gameRef.value.focus()
   loop()
-})
-
-onUnmounted(() => {
-  window.removeEventListener('keydown', onKeyDown)
-  window.removeEventListener('keyup', onKeyUp)
 })
 </script>
 
@@ -148,10 +117,11 @@ onUnmounted(() => {
 .game {
   width: 400px;
   height: 600px;
-  background: linear-gradient(#111, #222);
+  background: #111;
   margin: 40px auto;
   position: relative;
   overflow: hidden;
+  outline: none;
 }
 
 .player {
@@ -182,7 +152,7 @@ onUnmounted(() => {
 .game-over {
   position: absolute;
   inset: 0;
-  background: rgba(0,0,0,0.85);
+  background: rgba(0,0,0,0.8);
   color: white;
   display: flex;
   flex-direction: column;

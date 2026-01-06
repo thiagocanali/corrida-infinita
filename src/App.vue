@@ -1,7 +1,3 @@
 <template>
-  <Game />
+  <router-view />
 </template>
-
-<script setup>
-import Game from './Game.vue'
-</script>
