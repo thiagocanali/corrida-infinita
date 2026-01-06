@@ -9,6 +9,8 @@
       <router-link to="/v3">Versão 3 – Lanes</router-link>
       <router-link to="/v4">Versão 4 – Mobile</router-link>
       <router-link to="/v5">Versão 5 – Final</router-link>
+      <router-link to="/v6">Versão 6 – ???</router-link>
+      <router-link to="/v7">Versão 7 – ???</router-link>
     </div>
   </div>
 </template>
