@@ -8,6 +8,7 @@ import GameV4 from './games/GameV4.vue'
 import GameV5 from './games/GameV5.vue'
 import GameV6 from './games/GameV6.vue'
 import GameV7 from './games/GameV7.vue'
+import GameV8 from './games/GameV8.vue'
 
 const routes = [
   { path: '/', component: Home },
@@ -18,6 +19,7 @@ const routes = [
   { path: '/v5', component: GameV5 },
   { path: '/v6', component: GameV6 },
   { path: '/v7', component: GameV7 },
+  { path: '/v8', component: GameV8 },
 ]
 
 export default createRouter({

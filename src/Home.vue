@@ -11,6 +11,7 @@
       <router-link to="/v5">Versão 5 – Final</router-link>
       <router-link to="/v6">Versão 6 – ???</router-link>
       <router-link to="/v7">Versão 7 – ???</router-link>
+      <router-link to="/v8">Versão 8 – ???</router-link>
     </div>
   </div>
 </template>
